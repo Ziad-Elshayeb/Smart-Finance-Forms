@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Category Form</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 450px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .form-header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .form-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .form-body {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        input:invalid {
+            border-color: #ef4444;
+        }
+
+        input:valid {
+            border-color: #f59e0b;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .status-message {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        .status-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            pointer-events: none;
+        }
+
+        .input-icon input {
+            padding-left: 48px;
+        }
+
+        .category-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .category-tag {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+
+        .category-tag:hover {
+            background: #f59e0b;
+            color: white;
+            border-color: #f59e0b;
+        }
+
+        @media (max-width: 768px) {
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .form-body {
+                padding: 24px;
+            }
+
+            .form-header {
+                padding: 24px;
+            }
+
+            .container {
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <h1><i class="fas fa-tags"></i> Add Category</h1>
+            <p>Create a new transaction category</p>
+        </div>
+        
+        <div class="form-body">
+            <div id="statusMessage" class="status-message"></div>
+            
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label for="category">Category Name *</label>
+                    <div class="input-icon">
+                        <i class="fas fa-tag"></i>
+                        <input type="text" id="category" name="CATEGORY" required placeholder="Enter category name" maxlength="50">
+                    </div>
+                    <div class="category-suggestions">
+                        <span class="category-tag" onclick="selectCategory('Food & Dining')">Food & Dining</span>
+                        <span class="category-tag" onclick="selectCategory('Transportation')">Transportation</span>
+                        <span class="category-tag" onclick="selectCategory('Shopping')">Shopping</span>
+                        <span class="category-tag" onclick="selectCategory('Entertainment')">Entertainment</span>
+                        <span class="category-tag" onclick="selectCategory('Bills & Utilities')">Bills & Utilities</span>
+                        <span class="category-tag" onclick="selectCategory('Healthcare')">Healthcare</span>
+                        <span class="category-tag" onclick="selectCategory('Education')">Education</span>
+                        <span class="category-tag" onclick="selectCategory('Travel')">Travel</span>
+                        <span class="category-tag" onclick="selectCategory('Investment')">Investment</span>
+                        <span class="category-tag" onclick="selectCategory('Salary')">Salary</span>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Category
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                        <i class="fas fa-undo"></i> Clear
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Parse return URL and original query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnTo = urlParams.get('return_to') || 'transaction-form.html';
+            
+            // Store all original parameters to preserve them when returning
+            const originalParams = {};
+            for (const [key, value] of urlParams.entries()) {
+                if (key !== 'return_to') {
+                    originalParams[key] = value;
+                }
+            }
+            
+            // Form submission
+            document.getElementById('categoryForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const form = this;
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const statusMessage = document.getElementById('statusMessage');
+                
+                // Show loading state
+                form.classList.add('loading');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Category...';
+                
+                try {
+                    const formData = new FormData(form);
+                    const data = {};
+                    
+                    // Convert FormData to JSON
+                    for (let [key, value] of formData.entries()) {
+                        data[key] = value.trim();
+                    }
+                    
+                    // Validate category name
+                    if (!data.CATEGORY || data.CATEGORY.length < 2) {
+                        throw new Error('Category name must be at least 2 characters long');
+                    }
+                    
+                    const response = await fetch('https://ziadelshayeb1.app.n8n.cloud/webhook/category', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (response.ok) {
+                        statusMessage.className = 'status-message status-success';
+                        statusMessage.innerHTML = '<i class="fas fa-check-circle"></i> Category "' + data.CATEGORY + '" added successfully!';
+                        statusMessage.style.display = 'block';
+                        
+                        // Prepare to return to transaction form with all parameters
+                        const categoryName = document.getElementById('category').value;
+                        setTimeout(() => {
+                            // Create return URL with all original parameters
+                            const returnParams = new URLSearchParams(originalParams);
+                            
+                            // Add redirect parameters
+                            returnParams.append('redirect_from', 'add-category');
+                            returnParams.append('new_category', categoryName);
+                            
+                            // Navigate back to the transaction form
+                            window.location.href = `${returnTo}?${returnParams.toString()}`;
+                        }, 1500);
+                    } else {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+                    
+                } catch (error) {
+                    statusMessage.className = 'status-message status-error';
+                    statusMessage.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error: ' + error.message;
+                    statusMessage.style.display = 'block';
+                } finally {
+                    form.classList.remove('loading');
+                    submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add Category';
+                }
+            });
+
+            // Auto-capitalize first letter
+            document.getElementById('category').addEventListener('input', function() {
+                let value = this.value;
+                if (value.length > 0) {
+                    this.value = value.charAt(0).toUpperCase() + value.slice(1);
+                }
+            });
+        });
+
+        function selectCategory(categoryName) {
+            document.getElementById('category').value = categoryName;
+            document.getElementById('category').focus();
+        }
+
+        function resetForm() {
+            const form = document.getElementById('categoryForm');
+            form.reset();
+            
+            // Hide status message
+            document.getElementById('statusMessage').style.display = 'none';
+            
+            // Focus on input
+            document.getElementById('category').focus();
+        }
+    </script>
+</body>
+</html>
