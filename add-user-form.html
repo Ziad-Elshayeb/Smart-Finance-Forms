@@ -245,7 +245,7 @@
             
             // Parse return URL and original query parameters
             const urlParams = new URLSearchParams(window.location.search);
-            const returnTo = urlParams.get('return_to') || 'index.html';
+            const returnTo = urlParams.get('return_to');
             
             // Store all original parameters to preserve them when returning
             const originalParams = {};
